@@ -26,6 +26,9 @@ yarn-error.log*
 .env
 .env*.local
 
+# local Docker override (build context for dev, not needed in production)
+docker-compose.override.yml
+
 # vercel
 .vercel
 
