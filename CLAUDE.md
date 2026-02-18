@@ -64,7 +64,7 @@ Next.js runs behind a custom HTTP server that also handles WebSocket upgrades. T
 - **Production standalone mode**: Monkey-patches `http.createServer` to intercept the HTTP server that Next.js's `startServer()` creates, injecting WebSocket upgrade handling for `/ws/chat` before Next.js registers its own upgrade handler. Reads the embedded `nextConfig` from `server.standalone.js` (saved during Docker build) and sets `__NEXT_PRIVATE_STANDALONE_CONFIG` env var so Next.js skips webpack loading.
 
 The server also runs:
-- Chat message broadcasting with blacklist filtering and JWT token decoding for user identity
+- Chat message broadcasting with blacklist filtering; user identity resolved by looking up `userId` (sent from client session) in the DB — the NextAuth session cookie is HttpOnly so the JWT cannot be read client-side
 - `squares:changed` → `squares:refresh` broadcast for real-time grid updates
 - Payment reminder scheduler (15-minute interval) that checks unconfirmed squares approaching grace period deadline
 
