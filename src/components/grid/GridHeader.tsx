@@ -47,6 +47,14 @@ export function GridHeader({ settings }: GridHeaderProps) {
             </div>
 
             <nav className="flex items-center gap-3">
+              <a
+                href="/print"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary text-sm"
+              >
+                Print
+              </a>
               <button
                 onClick={() => setRulesOpen(true)}
                 className="btn-secondary text-sm"

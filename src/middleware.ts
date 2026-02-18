@@ -33,6 +33,7 @@ export default withAuth(
           pathname === '/register' ||
           pathname === '/signup' ||
           pathname === '/setup' ||
+          pathname === '/print' ||
           pathname.startsWith('/api/auth') ||
           pathname.startsWith('/api/setup') ||
           pathname.startsWith('/api/squares') ||
