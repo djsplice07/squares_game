@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  VIEWER
+  PLAYER
+}
+
+enum PaymentType {
+  VENMO
+  PAYPAL
+  CASHAPP
+  ZELLE
+  CASH
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  name         String
+  passwordHash String
+  role         Role          @default(PLAYER)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  squares      Square[]
+  chatMessages ChatMessage[]
+}
+
+model GameSettings {
+  id             String          @id @default("singleton")
+  title          String          @default("Super Bowl Squares")
+  commissioner   String          @default("")
+  eventName      String          @default("Super Bowl")
+  eventDate      String          @default("")
+  eventTime      String          @default("")
+  sbLogo         String          @default("/images/superbowlnumber.png")
+  nfcTeam        String          @default("NFC Team")
+  nfcLogo        String          @default("/images/nfc-generic.png")
+  afcTeam        String          @default("AFC Team")
+  afcLogo        String          @default("/images/afc-generic.png")
+  betAmount      Float           @default(10)
+  winFirstPct    Float           @default(20)
+  winSecondPct   Float           @default(20)
+  winThirdPct    Float           @default(20)
+  winFinalPct    Float           @default(30)
+  donationPct    Float           @default(10)
+  graceHours     Int             @default(48)
+  rulesText           String          @default("")
+  paymentInstructions String          @default("")
+  paymentMethods      PaymentMethod[]
+}
+
+model PaymentMethod {
+  id             String       @id @default(cuid())
+  gameSettingsId String       @default("singleton")
+  gameSettings   GameSettings @relation(fields: [gameSettingsId], references: [id], onDelete: Cascade)
+  type           PaymentType
+  value          String
+  enabled        Boolean      @default(true)
+}
+
+model Square {
+  id        String   @id @default(cuid())
+  position  String   @unique // "00" to "99"
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  guestName String?
+  guestEmail String?
+  notes     String?
+  confirmed Boolean  @default(false)
+  signupDate DateTime?
+  firstWin  Boolean  @default(false)
+  halfWin   Boolean  @default(false)
+  thirdWin  Boolean  @default(false)
+  finalWin     Boolean  @default(false)
+  reminderSent Boolean  @default(false)
+}
+
+model GridNumber {
+  id        String @id @default(cuid())
+  position  Int    @unique // 0-9 (column/row index)
+  nfcNumber Int    // 0-9
+  afcNumber Int    // 0-9
+}
+
+model Score {
+  id        String   @id @default("singleton")
+  nfcFirst  Int?
+  afcFirst  Int?
+  nfcHalf   Int?
+  afcHalf   Int?
+  nfcThird  Int?
+  afcThird  Int?
+  nfcFinal  Int?
+  afcFinal  Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EmailSettings {
+  id        String  @id @default("singleton")
+  smtpHost  String  @default("")
+  smtpPort  Int     @default(587)
+  smtpUser  String  @default("")
+  smtpPass  String  @default("")
+  useSsl    Boolean @default(false)
+  fromEmail String  @default("")
+  fromName  String  @default("")
+}
+
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  subject   String
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  guestName String?
+  message   String
+  deleted   Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model ChatBlacklist {
+  id        String   @id @default(cuid())
+  word      String   @unique
+  createdAt DateTime @default(now())
+}

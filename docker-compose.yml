@@ -1,0 +1,27 @@
+services:
+  app:
+    build: .
+    network_mode: host
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql://superbowl:superbowl@127.0.0.1:5432/superbowl?schema=public
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    network_mode: host
+    env_file: .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U superbowl"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  pgdata:
