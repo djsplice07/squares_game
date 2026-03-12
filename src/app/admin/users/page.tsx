@@ -24,6 +24,14 @@ export default function UsersPage() {
   const [newRole, setNewRole] = useState('PLAYER');
   const [error, setError] = useState('');
 
+  // Reset password modal
+  const [resetModal, setResetModal] = useState(false);
+  const [resetUserId, setResetUserId] = useState('');
+  const [resetUserName, setResetUserName] = useState('');
+  const [resetPassword, setResetPassword] = useState('');
+  const [resetError, setResetError] = useState('');
+  const [resetLoading, setResetLoading] = useState(false);
+
   const fetchUsers = () => {
     fetch('/api/users')
       .then((res) => res.json())
@@ -74,6 +82,40 @@ export default function UsersPage() {
     fetchUsers();
   };
 
+  const openResetModal = (user: User) => {
+    setResetUserId(user.id);
+    setResetUserName(user.name);
+    setResetPassword('');
+    setResetError('');
+    setResetModal(true);
+  };
+
+  const handleResetPassword = async () => {
+    setResetError('');
+    if (resetPassword.length < 8) {
+      setResetError('Password must be at least 8 characters');
+      return;
+    }
+    setResetLoading(true);
+    try {
+      const res = await fetch(`/api/users/${resetUserId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: resetPassword }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setResetError(data.error || 'Failed to reset password');
+      } else {
+        setResetModal(false);
+      }
+    } catch {
+      setResetError('Failed to reset password');
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
   const handleDelete = async (userId: string) => {
     if (!confirm('Are you sure you want to delete this user?')) return;
     await fetch(`/api/users/${userId}`, { method: 'DELETE' });
@@ -121,7 +163,13 @@ export default function UsersPage() {
                 <td className="py-2 pr-4 text-gray-400">
                   {new Date(user.createdAt).toLocaleDateString()}
                 </td>
-                <td className="py-2">
+                <td className="py-2 flex gap-2">
+                  <button
+                    onClick={() => openResetModal(user)}
+                    className="text-xs bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded"
+                  >
+                    Reset PW
+                  </button>
                   <button
                     onClick={() => handleDelete(user.id)}
                     className="text-xs bg-red-800 hover:bg-red-700 px-2 py-1 rounded"
@@ -134,6 +182,32 @@ export default function UsersPage() {
           </tbody>
         </table>
       </div>
+
+      <Modal open={resetModal} onClose={() => setResetModal(false)} title={`Reset Password — ${resetUserName}`}>
+        <div className="space-y-4">
+          {resetError && (
+            <div className="bg-red-900/50 border border-red-700 rounded-lg px-4 py-2 text-sm text-red-300">
+              {resetError}
+            </div>
+          )}
+          <Input
+            id="resetPassword"
+            label="New Password"
+            type="password"
+            value={resetPassword}
+            onChange={(e) => setResetPassword(e.target.value)}
+            placeholder="Min 8 characters"
+          />
+          <div className="flex gap-3">
+            <Button variant="secondary" onClick={() => setResetModal(false)} className="flex-1">
+              Cancel
+            </Button>
+            <Button onClick={handleResetPassword} loading={resetLoading} className="flex-1">
+              Reset Password
+            </Button>
+          </div>
+        </div>
+      </Modal>
 
       <Modal open={createModal} onClose={() => setCreateModal(false)} title="Create User">
         <div className="space-y-4">

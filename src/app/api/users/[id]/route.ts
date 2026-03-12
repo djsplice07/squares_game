@@ -15,10 +15,12 @@ export async function PATCH(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const isAdmin = (session.user as any).role === 'ADMIN';
+    const role = (session.user as any).role;
+    const isAdmin = role === 'ADMIN';
+    const isCommissioner = role === 'COMMISSIONER';
     const isSelf = (session.user as any).id === params.id;
 
-    if (!isAdmin && !isSelf) {
+    if (!isAdmin && !isCommissioner && !isSelf) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
@@ -38,7 +40,7 @@ export async function PATCH(
     }
 
     // Only admins can change roles
-    if (body.role && isAdmin) {
+    if (body.role && (isAdmin || isCommissioner)) {
       updateData.role = body.role;
     }
 

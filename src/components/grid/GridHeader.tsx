@@ -74,7 +74,7 @@ export function GridHeader({ settings }: GridHeaderProps) {
                       Admin
                     </Link>
                   )}
-                  <button onClick={() => signOut({ callbackUrl: window.location.origin + '/' })} className="text-sm text-gray-400 hover:text-white">
+                  <button onClick={async () => { await signOut({ redirect: false }); window.location.href = '/'; }} className="text-sm text-gray-400 hover:text-white">
                     Sign Out
                   </button>
                 </>
