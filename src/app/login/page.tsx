@@ -1,12 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,6 +13,14 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [sbLogo, setSbLogo] = useState('');
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((res) => res.json())
+      .then((data) => { if (data.sbLogo) setSbLogo(data.sbLogo); })
+      .catch(() => {});
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,13 +47,14 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <Image
-            src="/images/superbowlnumber.png"
-            alt="Super Bowl"
-            width={60}
-            height={60}
-            className="mx-auto mb-4"
-          />
+          {sbLogo && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={sbLogo}
+              alt="Super Bowl"
+              className="mx-auto mb-4 h-16 w-auto object-contain"
+            />
+          )}
           <h1 className="text-2xl font-bold">Sign In</h1>
         </div>
 

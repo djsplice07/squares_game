@@ -8,7 +8,7 @@ export default withAuth(
 
     // Admin routes require ADMIN or VIEWER role
     if (pathname.startsWith('/admin')) {
-      if (token?.role !== 'ADMIN' && token?.role !== 'VIEWER') {
+      if (token?.role !== 'ADMIN' && token?.role !== 'COMMISSIONER') {
         return NextResponse.redirect(new URL('/login', req.url));
       }
     }

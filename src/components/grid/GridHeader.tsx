@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Modal } from '@/components/ui/Modal';
@@ -74,9 +74,9 @@ export function GridHeader({ settings }: GridHeaderProps) {
                       Admin
                     </Link>
                   )}
-                  <Link href="/api/auth/signout" className="text-sm text-gray-400 hover:text-white">
+                  <button onClick={() => signOut({ callbackUrl: window.location.origin + '/' })} className="text-sm text-gray-400 hover:text-white">
                     Sign Out
-                  </Link>
+                  </button>
                 </>
               ) : (
                 <>

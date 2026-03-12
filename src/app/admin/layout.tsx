@@ -28,7 +28,7 @@ export default function AdminLayout({
 
   // Viewer can't access certain pages
   const viewerRestricted = ['/admin/settings', '/admin/users', '/admin/backup'];
-  const filteredNav = role === 'VIEWER'
+  const filteredNav = role === 'COMMISSIONER'
     ? navItems.filter((item) => !viewerRestricted.includes(item.href))
     : navItems;
 
@@ -41,7 +41,7 @@ export default function AdminLayout({
             SB Squares
           </Link>
           <p className="text-xs text-gray-500 mt-1">
-            {role === 'VIEWER' ? 'Commissioner' : 'Admin Panel'}
+            {role === 'COMMISSIONER' ? 'Commissioner' : 'Admin Panel'}
           </p>
         </div>
         <nav className="flex-1 p-2 space-y-0.5">
@@ -60,8 +60,11 @@ export default function AdminLayout({
             </Link>
           ))}
         </nav>
-        <div className="p-4 border-t border-gray-800">
-          <Link href="/" className="text-sm text-gray-400 hover:text-white">
+        <div className="p-4 border-t border-gray-800 space-y-2">
+          <Link href="/my-squares" className="block text-sm text-gray-400 hover:text-white">
+            Change Password
+          </Link>
+          <Link href="/" className="block text-sm text-gray-400 hover:text-white">
             &larr; Back to Grid
           </Link>
         </div>

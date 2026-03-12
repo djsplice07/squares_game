@@ -113,7 +113,7 @@ export default function UsersPage() {
                     className="bg-gray-800 border border-gray-700 rounded px-2 py-1 text-xs"
                   >
                     <option value="ADMIN">Admin</option>
-                    <option value="VIEWER">Viewer</option>
+                    <option value="COMMISSIONER">Commissioner</option>
                     <option value="PLAYER">Player</option>
                   </select>
                 </td>
@@ -153,7 +153,7 @@ export default function UsersPage() {
               className="input-field"
             >
               <option value="PLAYER">Player</option>
-              <option value="VIEWER">Viewer</option>
+              <option value="COMMISSIONER">Commissioner</option>
               <option value="ADMIN">Admin</option>
             </select>
           </div>

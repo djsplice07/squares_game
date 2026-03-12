@@ -95,6 +95,11 @@ async function main() {
       subject: 'Final Results - {{eventName}}',
       body: 'Hi {{name}},\n\nThe game is over! Here are the final results for {{eventName}}:\n\nWinners:\n{{winners}}\n\nCongratulations to all the winners!\n\nThank you for participating in this year\'s Super Bowl Squares. We hope you had a great time!\n\nView the final board at: {{gameUrl}}\n\n{{commissioner}}',
     },
+    {
+      name: 'password_change',
+      subject: 'Password Changed - {{eventName}}',
+      body: 'Hi {{name}},\n\nYour password for {{eventName}} Squares has been changed successfully.\n\nIf you did not make this change, please contact the commissioner immediately.\n\nYou can log in at: {{gameUrl}}/login\n\n{{commissioner}}',
+    },
   ];
 
   for (const template of templates) {

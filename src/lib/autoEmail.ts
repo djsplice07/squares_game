@@ -277,6 +277,31 @@ export function sendGameResultsEmails(winners: Record<string, { position: string
 }
 
 /**
+ * Send password changed confirmation email.
+ */
+export function sendPasswordChangedEmail(userName: string, userEmail: string) {
+  fireAndForget(async () => {
+    const template = await getTemplate('password_change');
+    if (!template) return;
+
+    const { settings, gameUrl } = await getGameContext();
+
+    const variables: Record<string, string> = {
+      name: userName,
+      email: userEmail,
+      commissioner: settings?.commissioner || '',
+      eventName: settings?.eventName || '',
+      gameUrl,
+    };
+
+    const subject = renderTemplate(template.subject, variables);
+    const body = renderTemplate(template.body, variables);
+    await sendEmail(userEmail, subject, body);
+    console.log(`[AutoEmail] Password changed email sent to ${userEmail}`);
+  });
+}
+
+/**
  * Check for squares approaching grace period deadline and send reminders.
  * Called periodically from server.js.
  */

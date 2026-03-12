@@ -24,7 +24,8 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Install prisma CLI for db push at runtime
+# Install prisma CLI and psql client for runtime migrations
+RUN apk add --no-cache postgresql-client
 RUN npm install -g prisma@6
 
 COPY --from=builder /app/public ./public
