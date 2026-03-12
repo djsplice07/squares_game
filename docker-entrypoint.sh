@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+mkdir -p /app/public/uploads
+
 echo "Running Prisma migrations..."
 npx prisma db push --skip-generate
 
