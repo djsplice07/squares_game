@@ -38,6 +38,7 @@ export default withAuth(
           pathname.startsWith('/api/setup') ||
           pathname.startsWith('/api/squares') ||
           pathname.startsWith('/api/settings') ||
+          pathname.startsWith('/api/uploads') ||
           pathname.startsWith('/api/users') ||
           pathname.startsWith('/_next') ||
           pathname.startsWith('/images')

@@ -75,7 +75,7 @@ export async function POST(request: Request) {
 
     await writeFile(path.join(UPLOADS_DIR, fileName), buffer);
 
-    return NextResponse.json({ url: `/uploads/${fileName}` });
+    return NextResponse.json({ url: `/api/uploads/${fileName}` });
   } catch {
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
   }
@@ -103,7 +103,7 @@ export async function GET() {
       const uploads = await readdir(UPLOADS_DIR);
       for (const file of uploads) {
         if (/\.(png|jpe?g|gif|webp|svg)$/i.test(file)) {
-          images.push({ url: `/uploads/${file}`, name: file });
+          images.push({ url: `/api/uploads/${file}`, name: file });
         }
       }
     }
@@ -149,7 +149,11 @@ export async function DELETE(request: Request) {
     }
 
     // Only allow deletion from known image directories
-    if (!url.startsWith('/uploads/') && !url.startsWith('/images/')) {
+    if (
+      !url.startsWith('/uploads/') &&
+      !url.startsWith('/images/') &&
+      !url.startsWith('/api/uploads/')
+    ) {
       return NextResponse.json({ error: 'Invalid image path' }, { status: 400 });
     }
 
@@ -157,7 +161,7 @@ export async function DELETE(request: Request) {
     const fileName = path.basename(url);
 
     // Determine the target directory based on the URL prefix
-    const targetDir = url.startsWith('/uploads/') ? UPLOADS_DIR : IMAGES_DIR;
+    const targetDir = url.startsWith('/images/') ? IMAGES_DIR : UPLOADS_DIR;
     const filePath = path.join(targetDir, fileName);
 
     // Verify the resolved path is still within the expected directory
