@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/djsplice07/squares_game:latest
+    image: spliceboti/squares_game:latest
     network_mode: host
     env_file: .env
     environment:
